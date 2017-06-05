@@ -58,14 +58,12 @@ public class ReviewScore extends Configured implements Tool {
         @Override
         public void map(LongWritable key, Text value, Context context)
         throws IOException, InterruptedException {
-            for (String token: value.toString().split("\n")) {   // map 의 입력은 라인단위로 구분뒤어 있어서 불필요한 문장임
-                try {
-                    JSONObject jsonObject = new JSONObject(token);
-                    word.set((String) jsonObject.get("asin"));
-                    context.write(word, new DoubleWritable(jsonObject.getDouble("overall")));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            try {
+                JSONObject jsonObject = new JSONObject(value.toString());
+                word.set((String) jsonObject.get("asin"));
+                context.write(word, new DoubleWritable(jsonObject.getDouble("overall")));
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }
